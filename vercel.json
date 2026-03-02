@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/viewers.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/viewers", "dest": "/api/viewers.js" },
+    { "src": "/(.*)", "dest": "/counter.html" }
+  ]
+}
