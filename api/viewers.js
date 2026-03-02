@@ -1,31 +1,24 @@
 // Vercel serverless function for live viewer count
-let viewerCount = 0;
-let clients = [];
+
+// Vercel serverless functions are stateless, so we can't keep a global viewer count or client list.
+// Instead, we treat each connection as a single viewer and send count = 1 (the current client).
+// For a true global live count, you'd need a persistent store (like Redis or Upstash) or a hosted WebSocket service.
 
 export default function handler(req, res) {
-  if (req.method === 'GET' && req.url === '/api/viewers') {
-    // SSE (Server-Sent Events) for live updates
+  if (req.method === 'GET') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*',
     });
-    viewerCount++;
-    sendCount();
-    clients.push(res);
-    req.on('close', () => {
-      viewerCount--;
-      clients = clients.filter(c => c !== res);
-      sendCount();
-    });
+    // Just send 1 for this demo (since Vercel serverless can't track global state)
+    res.write(`data: {"count":1}\n\n`);
+    // Keep the connection open
+    // Optionally, you could send periodic pings here
+    // End after a timeout to avoid hanging connections
+    setTimeout(() => res.end(), 30000);
   } else {
     res.status(404).end();
-  }
-}
-
-function sendCount() {
-  for (const client of clients) {
-    client.write(`data: {"count":${viewerCount}}\n\n`);
   }
 }
