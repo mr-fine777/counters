@@ -6,21 +6,14 @@
 	<title>Live Viewer Counter</title>
 </head>
 <body>
-	<div style="font-size:2em;margin:20px;">
-		Live viewers: <span id="viewerCount">0</span>
-	</div>
-	<script>
-		const viewerCountEl = document.getElementById('viewerCount');
-		// Connect to Vercel SSE endpoint
-		const evtSource = new EventSource('/api/viewers');
-		evtSource.onmessage = function(event) {
-			try {
-				const data = JSON.parse(event.data);
-				if (typeof data.count === 'number') {
-					viewerCountEl.textContent = data.count;
-				}
-			} catch (e) {}
-		};
-	</script>
+<span id="viewerCount">0</span> viewers
+
+<script>
+fetch("https://api.countapi.xyz/hit/YOUR-SITE-NAME/live")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("viewerCount").innerText = data.value;
+  });
+</script>
 </body>
 </html>
