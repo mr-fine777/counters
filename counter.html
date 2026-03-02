@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Live Viewer Counter</title>
+</head>
+<body>
+	<div style="font-size:2em;margin:20px;">
+		Live viewers: <span id="viewerCount">0</span>
+	</div>
+	<script>
+		const viewerCountEl = document.getElementById('viewerCount');
+		// Connect to Vercel SSE endpoint
+		const evtSource = new EventSource('/api/viewers');
+		evtSource.onmessage = function(event) {
+			try {
+				const data = JSON.parse(event.data);
+				if (typeof data.count === 'number') {
+					viewerCountEl.textContent = data.count;
+				}
+			} catch (e) {}
+		};
+	</script>
+</body>
+</html>
